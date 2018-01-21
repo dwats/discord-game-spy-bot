@@ -4,7 +4,8 @@ const {
   addGameData,
   removeGameData,
   listGameData,
-  getGameData
+  getGameData,
+  editGameData
 } = require('./lib/utils');
 require('dotenv').config();
 
@@ -18,9 +19,13 @@ bot.on('ready', () => {
   setGameDataFilepath(process.env.DATA_PATH);
 });
 
-bot.on('presence', (user, uid, status, game, event) => {
+bot.on('presence', (user, uid, status, game) => {
   if (game && !getGameData(game.name)) {
     console.log(`New Entry! ${game.name}, ${user}`);
     addGameData(game.name, game.timestamps.start, uid, user);
+  }
+  else if (game && getGameData(game.name)) {
+    console.log(`Entry updated! ${game.name}, ${user}`);
+    editGameData(game.name, game.timestamps.start, uid, user);
   }
 });
